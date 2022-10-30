@@ -3,24 +3,27 @@ package com.kuokyn.graphql_test;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
 @Service
 public class GroceryService {
-    private final GroceryRepository groceryRepository ;
+    private final GroceryRepository groceryRepository;
+    private final UserRepository userRepository;
 
-    public GroceryService(final GroceryRepository GroceryRepository) {
+
+    public GroceryService(final GroceryRepository GroceryRepository, UserRepository userRepository) {
         this.groceryRepository = GroceryRepository ;
+        this.userRepository = userRepository;
     }
 
     public Grocery createGrocery(String text,
                                  Integer quantity,
                                  Boolean isBought,
-                                 String uid) {
-        Grocery grocery = new Grocery(text, quantity, isBought, uid);
+                                 Long uid) {
+        User user = userRepository.findById(uid).orElseThrow();
+        Grocery grocery = new Grocery(text, quantity, isBought, user);
         groceryRepository.save(grocery);
         return grocery;
     }
@@ -31,8 +34,8 @@ public class GroceryService {
         return groceryRepository.findById(id).isEmpty();
     }
 
-    public List<Grocery> getGroceries() {
-        return new ArrayList<>(groceryRepository.findAll());
+    public List<Grocery> getGroceriesByUserId(Long uid) {
+        return groceryRepository.findAllByUserId(uid);
     }
 
     public Grocery getGrocery(Integer id) {
@@ -41,8 +44,13 @@ public class GroceryService {
 
     @PostConstruct
     private void init() {
-        groceryRepository.save(new Grocery("Bread", 1, false, "James"));
-        groceryRepository.save(new Grocery("Ham", 1, false, "James"));
-        groceryRepository.save(new Grocery("Cheese", 1, false, "James"));
+        userRepository.save(new User("James", "89245556655"));
+        userRepository.save(new User("Kate", "89675554433"));
+        groceryRepository.save(new Grocery("Bread", 1, false, userRepository.findById(1L).orElseThrow()));
+        groceryRepository.save(new Grocery("Ham", 1, false, userRepository.findById(1L).orElseThrow()));
+        groceryRepository.save(new Grocery("Cheese", 1, false, userRepository.findById(1L).orElseThrow()));
+        groceryRepository.save(new Grocery("Bread", 1, false, userRepository.findById(2L).orElseThrow()));
+        groceryRepository.save(new Grocery("Ham", 1, false, userRepository.findById(2L).orElseThrow()));
+        groceryRepository.save(new Grocery("Cheese", 1, false, userRepository.findById(2L).orElseThrow()));
     }
 }

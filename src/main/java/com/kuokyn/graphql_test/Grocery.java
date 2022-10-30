@@ -26,14 +26,15 @@ public class Grocery implements Serializable {
     private Integer quantity;
     @Column(name = "isBought")
     private Boolean isBought;
-    @Column(name = "user_id")
-    private String uid;
 
-    public Grocery(String text, Integer quantity, Boolean isBought, String uid) {
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User user;
+
+    public Grocery(String text, Integer quantity, Boolean isBought, User user) {
         this.text = text;
         this.quantity = quantity;
         this.isBought = isBought;
-        this.uid = uid;
+        this.user = user;
     }
 
     public Grocery(){}

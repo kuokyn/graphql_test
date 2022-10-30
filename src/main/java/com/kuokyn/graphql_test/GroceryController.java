@@ -6,34 +6,34 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+
 @Controller
 public class GroceryController {
 
     @Autowired
-    private GroceryRepository groceryRepository;
-//    private GroceryService groceryService;
+    private GroceryService groceryService;
 
     @QueryMapping
-    public Iterable<Grocery> getGroceries() {
-        return groceryRepository.findAll();
+    public List<Grocery> getGroceriesByUserId(@Argument Long uid) {
+        return groceryService.getGroceriesByUserId(uid);
     }
 
     @QueryMapping
     public Grocery getGrocery(@Argument Integer id) {
-        return groceryRepository.findById(id).orElseThrow();
+        return groceryService.getGrocery(id);
     }
 
     @MutationMapping
     public Grocery createGrocery(@Argument String text,
                                  @Argument Integer quantity,
                                  @Argument Boolean isBought,
-                                 @Argument String uid) {
-        Grocery grocery = new Grocery(text, quantity, isBought, uid);
-        return groceryRepository.save(grocery);
+                                 @Argument Long uid) {
+        return groceryService.createGrocery(text, quantity, isBought, uid);
     }
 
     @MutationMapping
     public void deleteGrocery(@Argument Integer id) {
-        groceryRepository.deleteById(id);
+        groceryService.deleteGrocery(id);
     }
 }

@@ -1,5 +1,5 @@
 type Grocery {
-    id: Int!,
+    id: ID!,
     text: String,
     quantity: Int!,
     isBought: Boolean!,
@@ -7,17 +7,18 @@ type Grocery {
 }
 
 type User {
-    id: Int!,
+    id: ID!,
     name: String,
     phone: String!
+    groceries: [Grocery]
 }
 
 type Query {
-    getGroceries:[Grocery]
+    getGroceriesByUserId(uid: Int):[Grocery]
     getGrocery(id: Int):Grocery
 }
 
 type Mutation {
-    createGrocery(text: String!, quantity: Int!, isBought: Boolean!, uid: String!):Grocery
+    createGrocery(text: String!, quantity: Int!, isBought: Boolean!, user: ID!):Grocery
     deleteGrocery(id: Int): Boolean
 }
