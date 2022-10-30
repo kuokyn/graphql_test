@@ -1,0 +1,23 @@
+type Grocery {
+    id: Int!,
+    text: String,
+    quantity: Int!,
+    isBought: Boolean!,
+    user: User!
+}
+
+type User {
+    id: Int!,
+    name: String,
+    phone: String!
+}
+
+type Query {
+    getGroceries:[Grocery]
+    getGrocery(id: Int):Grocery
+}
+
+type Mutation {
+    createGrocery(text: String!, quantity: Int!, isBought: Boolean!, uid: String!):Grocery
+    deleteGrocery(id: Int): Boolean
+}
